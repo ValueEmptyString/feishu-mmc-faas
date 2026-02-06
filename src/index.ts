@@ -9,15 +9,15 @@ basekit.addDomainList([...feishuDm, 'api.example.com', '121.40.190.107', 'dashsc
 basekit.addField({
   authorizations: [
     {
-      id: 'auth_id_1',// 授权的id，用于context.fetch第三个参数以区分该请求使用哪个授权
-      platform: 'baidu',// 需要与之授权的平台,比如baidu(必须要是已经支持的三方凭证,不可随便填写,如果想要支持更多的凭证，请填写申请表单)
+      id: 'auth_id',// 授权的id，用于context.fetch第三个参数以区分该请求使用哪个授权
+      platform: '毛毛虫',// 需要与之授权的平台,比如baidu(必须要是已经支持的三方凭证,不可随便填写,如果想要支持更多的凭证，请填写申请表单)
       type: AuthorizationType.HeaderBearerToken,
       required: false,// 设置为选填，用户如果填了授权信息，请求中则会携带授权信息，否则不带授权信息
-      instructionsUrl: "https://www.saas.jcbbi.com/",// 帮助链接，告诉使用者如何填写这个apikey
-      label: '测试授权',
+      instructionsUrl: "https://www.mmcjt.cn/",// 帮助链接，告诉使用者如何填写这个apikey
+      label: '授权',
       icon: {
-        light: '',
-        dark: ''
+        light: 'https://saas.jcbbi.com/upload/2026/01/29/767965034025029.jpg',
+        dark: 'https://saas.jcbbi.com/upload/2026/01/29/767965034025029.jpg'
       }
     }
   ],
@@ -25,9 +25,15 @@ basekit.addField({
   i18n: {
     messages: {
       'zh-CN': {
-        "param_image_label": "图片",
+        "param_image_label": "素材1",
+        "param_image_label2": "素材2",
+        "param_image_label3": "素材3",
         "param_prompt_label": "提示词",
         "param_model_label": "型号",
+        "param_temperature_label": "Temperature",
+        "param_top_p_label": "topP",
+        "param_top_K_label": "topK",
+        "param_candidateCount_label": "candidateCount",
       },
     }
   },
@@ -46,7 +52,7 @@ basekit.addField({
     },
     {
       key: 'imageUrl2',
-      label: `${t('param_image_label')}`,
+      label: `${t('param_image_label2')}`,
       component: FieldComponent.FieldSelect,
       props: {
         supportType: [FieldType.Attachment],
@@ -57,29 +63,7 @@ basekit.addField({
     },
     {
       key: 'imageUrl3',
-      label: `${t('param_image_label')}`,
-      component: FieldComponent.FieldSelect,
-      props: {
-        supportType: [FieldType.Attachment],
-      },
-      validator: {
-        required: false,
-      }
-    },
-    {
-      key: 'imageUrl4',
-      label: `${t('param_image_label')}`,
-      component: FieldComponent.FieldSelect,
-      props: {
-        supportType: [FieldType.Attachment],
-      },
-      validator: {
-        required: false,
-      }
-    },
-    {
-      key: 'imageUrl5',
-      label: `${t('param_image_label')}`,
+      label: `${t('param_image_label3')}`,
       component: FieldComponent.FieldSelect,
       props: {
         supportType: [FieldType.Attachment],
@@ -110,6 +94,50 @@ basekit.addField({
         required: true,
       }
     },
+    {
+      key: 'temperature',
+      label: t('param_temperature_label'),
+      component: FieldComponent.Input,
+      props: {
+        placeholder: '请输入0.0-2.0之间数字',
+      },
+      validator: {
+        required: false,
+      }
+    },
+    {
+      key: 'top_p',
+      label: t('param_top_p_label'),
+      component: FieldComponent.Input,
+      props: {
+        placeholder: '请输入0.0-1.0之间数字',
+      },
+      validator: {
+        required: false,
+      }
+    },
+    {
+      key: 'top_K',
+      label: t('param_top_K_label'),
+      component: FieldComponent.Input,
+      props: {
+        placeholder: '请输入10-100之间数字',
+      },
+      validator: {
+        required: false,
+      }
+    },
+    {
+      key: 'candidateCount',
+      label: t('param_candidateCount_label'),
+      component: FieldComponent.Input,
+      props: {
+        placeholder: '请输入1-8之间数字',
+      },
+      validator: {
+        required: false,
+      }
+    },
   ],
   // 定义捷径的返回结果类型，直接返回编辑后的图片
   resultType: {
@@ -118,7 +146,7 @@ basekit.addField({
   // formItemParams 为运行时传入的字段参数，对应字段配置里的 formItems （如引用的依赖字段）
   execute: async (formItemParams, context) => {
     // 获取入参 - 开发者可以根据自己的字段配置获取相应参数
-    const { imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, prompt, model } = formItemParams;
+    const { imageUrl1, imageUrl2, imageUrl3, prompt, model, temperature, top_p, top_K, candidateCount } = formItemParams;
 
     /** 
      * 为方便查看日志，使用此方法替代console.log
@@ -145,7 +173,7 @@ basekit.addField({
       const url = 'https://api.ezlinkai.com/v1beta/models/gemini-3-pro-image-preview:generateContent';
 
       // 收集所有图片字段
-      const imageFields = [imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5];
+      const imageFields = [imageUrl1, imageUrl2, imageUrl3];
 
       // 转换所有临时URL为base64
       const base64Images: Array<{ mime_type: string, data: string }> = [];
@@ -185,7 +213,7 @@ basekit.addField({
 
       const headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer vSECfXfc7PQiB3Ap2029936eE83349878b0aE0F82b76D228'
+        'Authorization': 'Bearer Bvvw1Y5LRwNnzTIe2446Ed1802E5472b81AaDdF0Cd3fBa3a'
       };
 
       // Build request payload according to the provided curl example - text first, then images
@@ -197,6 +225,10 @@ basekit.addField({
             { "text": prompt }
           ]
         }],
+        // "temperature": Number(temperature),
+        // "topP": Number(top_p),
+        // "topK": Number(top_K),
+        // "candidateCount": Number(candidateCount),
         "generationConfig": {
           "responseModalities": ["TEXT", "IMAGE"]
         }
@@ -223,7 +255,7 @@ basekit.addField({
       // debugLog({ '===请求参数': JSON.stringify(requestBody, null, 2) });
 
       // 直接使用context.fetch
-      const res = await context.fetch(url, init, 'auth_id_1');
+      const res = await context.fetch(url, init, 'auth_id');
       // debugLog({ '===响应内容': res });
       // debugLog({ '===响应状态': res.status });
 
@@ -263,7 +295,7 @@ basekit.addField({
       function generateNonce(): string {
         return Math.floor(100000 + Math.random() * 900000).toString();
       }
-      
+
       // 生成签名
       function generateSign(method: string, url: string, accessKey: string, timestamp: string, nonce: string, accessSecret: string): string {
         // 处理url，去除协议、域名、参数，以/开头
@@ -275,7 +307,7 @@ basekit.addField({
         const signData = hmac.update(str).digest('base64');
         return signData;
       }
-      
+
       // 3. 上传生成的图片到外部存储API
       const uploadedImages = [];
       for (const [index, url] of editedImageUrls.entries()) {
@@ -283,12 +315,12 @@ basekit.addField({
           // 解析base64 data URI
           const dataUriRegex = /^data:(.+);base64,(.+)$/;
           const match = url.match(dataUriRegex);
-          
+
           if (match) {
             const [, mimeType, base64Data] = match;
             const fileExtension = mimeType.split('/')[1];
             const fileName = `generated-${index + 1}.${fileExtension}`;
-            
+
             // 上传API配置
             const uploadUrl = 'https://saas.jcbbi.com:8180/api/sysFile/uploadFileFromBase64';
             const accessKey = 'mmcimages';
@@ -296,10 +328,10 @@ basekit.addField({
             const method = 'POST';
             const timestamp = Math.floor(Date.now() / 1000).toString();
             const nonce = generateNonce();
-            
+
             // 生成签名
             const sign = generateSign(method, uploadUrl, accessKey, timestamp, nonce, accessSecret);
-            
+
             // 调用上传API
             const uploadResponse = await context.fetch(uploadUrl, {
               method: method,
@@ -316,10 +348,10 @@ basekit.addField({
                 "contentType": mimeType
               })
             });
-            
+
             const uploadResult = await uploadResponse.json();
             debugLog({ '===上传结果': uploadResult });
-            
+
             if (uploadResult.code === 200 && uploadResult.result) {
               // 拼接完整URL
               const fullUrl = `https://saas.jcbbi.com/${uploadResult.result.url}`;
@@ -342,7 +374,7 @@ basekit.addField({
           });
         }
       }
-      
+
       // 返回上传后的图片结果
       return {
         code: FieldCode.Success,
