@@ -225,11 +225,11 @@ basekit.addField({
             { "text": prompt }
           ]
         }],
-        // "temperature": Number(temperature),
-        // "topP": Number(top_p),
-        // "topK": Number(top_K),
-        // "candidateCount": Number(candidateCount),
         "generationConfig": {
+          "temperature": Number(temperature),
+          "topP": Number(top_p),
+          "topK": Number(top_K),
+          "candidateCount": Number(candidateCount),
           "responseModalities": ["TEXT", "IMAGE"]
         }
       };
